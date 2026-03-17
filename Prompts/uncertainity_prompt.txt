@@ -1,0 +1,162 @@
+
+You are a proficient planner. Based on the provided information, query and persona, please give a detailed travel plan, including specifics such as flight numbers (e.g., 6E-789), restaurant names, and accommodation names. Note that all the information in your plans should be derived from the provided data. You must adhere to the format given in the example. Additionally, all details should align with common sense. 
+
+CRITICAL INSTRUCTION: INCORPORATE UNCERTAINTY & BUFFER TIMES
+You must account for uncertainty in your planning by incorporating buffer times based on the historical data provided in the context:
+1. Attractions & Restaurants: Use the provided `besttime_analysis` to gauge crowd levels. If visiting during 'High' or 'Above average' intensity hours, add a 15-30 minute buffer to the visit duration. Try to avoid 'peak_hours'.
+2. Road Transportation (which include bus and Cab Transportation): In addition to `Total Travel Time`, add the `Estimated Historical Delay` to the travel duration to ensure realistic arrival times.
+3. Train Transportation: Check `avg_delay_1month` (or similar available delay metric) and add this expected delay to the train's arrival time before scheduling the next activity.
+4. Flight Transportation: Review `OnTimePerformance` and `DelayStats`. If the flight has a low on-time rating or high delay probability, add a 30-45 minute buffer to the arrival time before the next scheduled item.
+
+The symbol '-' indicates that information is unnecessary. For example, in the provided sample, you do not need to plan after returning to the departure city. When you travel to two cities in one day, you should note it in the "Current City" section as in the example (i.e., from A to B). Include events happening on that day, if any. Provide a Point of Interest List, which is an ordered list of places visited throughout the day. This list should include accommodations, attractions, or restaurants and their starting and ending timestamps. Each day must start and end with the accommodation where the traveler is staying. Breakfast is ideally scheduled at 9:40 AM and lasts about 50 minutes. Lunch is best planned for 2:20 PM, with a duration of around an hour. Dinner should take place at 8:45 PM, lasting approximately 1 hour and 15 minutes. Laidback Travelers typically explore one attraction per day and sometimes opt for more, while Adventure Seekers often visit 2 or 3 attractions, occasionally exceeding that number.
+
+IMPORTANT: YOUR OUTPUT MUST BE IN JSONL FORMAT ONLY. Do not include any explanations, markdown formatting, or text outside the JSON structure.
+
+=== COMPRESSED JSON DATA FORMAT GUIDE ===
+
+You are given venue crowd and timing data in a COMPRESSED JSON format to reduce context size.
+
+IMPORTANT:
+• This compressed format is lossless.
+• Do NOT assume missing information.
+• All times are in 24-hour format.
+• Interpret numeric ranges inclusively (e.g., [11,16] = 11:00–16:59).
+
+GLOBAL FIELDS (apply to the venue / average day):
+- "o": venue opening hour
+- "c": venue closing hour
+- "s": surge behavior
+    - "in": hour when most visitors arrive
+    - "out": hour when most visitors leave
+- "I": intensity dictionary (code → meaning)
+
+AVERAGE DAY OBJECT FORMAT:
+The key "avg_day" represents aggregated crowd behavior across days.
+
+Keys inside "avg_day":
+- "cw": crowd windows, each as [start_hour, end_hour, intensity_code]
+- "q": quiet hours (lowest crowd)
+- "p": peak window as [start, end] (if present)
+
+INTENSITY CODES:
+- BA → Below average crowd
+- A  → Average crowd
+- AA → Above average crowd
+- H  → High crowd
+- L  → Low crowd
+
+HOW TO INTERPRET:
+- Use "cw" to reason about time-dependent crowd levels.
+- Prefer "q" hours for low waiting time and higher feasibility.
+- Treat "p" as the busiest continuous window.
+- Use surge times to anticipate entry and exit congestion.
+- Do NOT expand or rewrite the data unless explicitly asked.
+
+GOAL:
+Use this data to perform crowd-aware reasoning, scheduling, uncertainty modeling, or feasibility checks without adding new assumptions.
+
+=== END OF COMPRESSED JSON DATA FORMAT GUIDE ===
+
+
+****** Example ******  
+
+Query: Plan a 7-day trip for 2 people starting from Bhopal to visit 3 cities—Kanpur, Surat, and Pune—from November 6th to November 12th, 2025, with a budget of INR 91306. Accommodations should feature a Wellness Spa, provide Cleaning and Laundry services, and offer African cuisine.  
+Traveler Persona:
+Traveler Type: Culture Enthusiast; Purpose of Travel: Cultural Immersion; Spending Preference: Luxury; Location Preference: Historical Sites
+  
+Travel Plan:  
+[
+  {
+    "days": 1,
+    "current_city": "from Bhopal to Kanpur",
+    "transportation": "Train Number: 12191, from Bhopal to Kanpur, Departure Time: 06:30, Arrival Time: 15:15",
+    "breakfast": "-",
+    "attraction": "Cawnpore Club, Kanpur",
+    "lunch": "-",
+    "dinner": "Haveli Restaurant, Kanpur",
+    "accommodation": "Hotel Bhagyaraj Palace, Kanpur",
+    "event": "-",
+    "point_of_interest": "Hotel Bhagyaraj Palace, check-in from 15:45 to 16:15, nearest transit: Kanpur Central Station, 3km away; Cawnpore Club, visit from 16:30 to 18:30, nearest transit: Civil Lines, 0.5km away; Haveli Restaurant, visit from 20:45 to 22:00, nearest transit: Mall Road Stop, 1km away; Hotel Bhagyaraj Palace, stay from 22:15 to 08:00, nearest transit: Kanpur Central Station, 3km away."
+  },
+  {
+    "days": 2,
+    "current_city": "Kanpur",
+    "transportation": "-",
+    "breakfast": "Little Chef Restaurant, Kanpur",
+    "attraction": "Brahmavart Ghat, Kanpur",
+    "lunch": "Haveli Restaurant, Kanpur",
+    "dinner": "Dadi ki rasoi, Kanpur",
+    "accommodation": "Hotel Bhagyaraj Palace, Kanpur",
+    "event": "-",
+    "point_of_interest": "Hotel Bhagyaraj Palace, stay from 08:00 to 09:40, nearest transit: Kanpur Central Station, 3km away; Little Chef Restaurant, visit from 09:40 to 10:30, nearest transit: Mall Road Stop, 1km away; Brahmavart Ghat, visit from 11:00 to 13:30, nearest transit: Bithoor Ghat, 0.2km away; Haveli Restaurant, visit from 14:20 to 15:20, nearest transit: Mall Road Stop, 1km away; Dadi ki rasoi, visit from 20:45 to 22:00, nearest transit: Bithoor Road Stop, 1.5km away; Hotel Bhagyaraj Palace, stay from 22:15 to 06:00, nearest transit: Kanpur Central Station, 3km away."
+  },
+  {
+    "days": 3,
+    "current_city": "from Kanpur to Surat",
+    "transportation": "Flight Number: 6E-2145, from Kanpur to Surat, Departure Time: 08:00, Arrival Time: 10:30",
+    "breakfast": "-",
+    "attraction": "Dutch Garden, Surat",
+    "lunch": "Mysore Cafe, Surat",
+    "dinner": "Levvel 5 Terrace Restro & Cafe, Surat",
+    "accommodation": "Surat Marriott Hotel, Surat",
+    "event": "-",
+    "point_of_interest": "Hotel Bhagyaraj Palace, checkout from 06:00 to 06:30, nearest transit: Kanpur Central Station, 3km away; Kanpur Airport, arrive from 07:00 to 07:30, nearest transit: Airport Road, 2km away; Surat Marriott Hotel, check-in from 11:00 to 11:30, nearest transit: Surat Railway Station, 4km away; Dutch Garden, visit from 12:00 to 13:30, nearest transit: Athwalines, 1km away; Mysore Cafe, visit from 14:20 to 15:20, nearest transit: Ring Road Stop, 1km away; Levvel 5 Terrace Restro & Cafe, visit from 20:45 to 22:00, nearest transit: VIP Road Stop, 1km away; Surat Marriott Hotel, stay from 22:15 to 08:00, nearest transit: Surat Railway Station, 4km away."
+  },
+  {
+    "days": 4,
+    "current_city": "Surat",
+    "transportation": "-",
+    "breakfast": "Taste Of India Restaurant, Surat",
+    "attraction": "ISKCON Temple, Surat",
+    "lunch": "Levvel 5 Terrace Restro & Cafe, Surat",
+    "dinner": "Mysore Cafe, Surat",
+    "accommodation": "Surat Marriott Hotel, Surat",
+    "event": "-",
+    "point_of_interest": "Surat Marriott Hotel, stay from 08:00 to 09:40, nearest transit: Surat Railway Station, 4km away; Taste Of India Restaurant, visit from 09:40 to 10:30, nearest transit: Varachha Road, 1km away; ISKCON Temple, visit from 11:00 to 13:30, nearest transit: Athwalines, 0.5km away; Levvel 5 Terrace Restro & Cafe, visit from 14:20 to 15:20, nearest transit: VIP Road Stop, 1km away; Mysore Cafe, visit from 20:45 to 22:00, nearest transit: Ring Road Stop, 1km away; Surat Marriott Hotel, stay from 22:15 to 07:00, nearest transit: Surat Railway Station, 4km away."
+  },
+  {
+    "days": 5,
+    "current_city": "from Surat to Pune",
+    "transportation": "Flight Number: 6E-3456, from Surat to Pune, Departure Time: 09:00, Arrival Time: 10:30",
+    "breakfast": "-",
+    "attraction": "Mahadaji Shinde Chatri, Pune",
+    "lunch": "Spice Kitchen, Pune",
+    "dinner": "Sante Spa Cuisine, Pune",
+    "accommodation": "Conrad Pune, Pune",
+    "event": "-",
+    "point_of_interest": "Surat Marriott Hotel, checkout from 07:00 to 07:30, nearest transit: Surat Railway Station, 4km away; Surat Airport, arrive from 08:00 to 08:30, nearest transit: Airport Road, 3km away; Conrad Pune, check-in from 11:00 to 11:30, nearest transit: Pune Junction, 5km away; Mahadaji Shinde Chatri, visit from 12:00 to 13:30, nearest transit: Wanowrie, 1km away; Spice Kitchen, visit from 14:20 to 15:20, nearest transit: Koregaon Park, 0.5km away; Sante Spa Cuisine, visit from 20:45 to 22:00, nearest transit: Koregaon Park, 0.3km away; Conrad Pune, stay from 22:15 to 08:00, nearest transit: Pune Junction, 5km away."
+  },
+  {
+    "days": 6,
+    "current_city": "Pune",
+    "transportation": "-",
+    "breakfast": "Spice Kitchen, Pune",
+    "attraction": "ISKCON NVCC Temple, Pune",
+    "lunch": "Sante Spa Cuisine, Pune",
+    "dinner": "The Flour Works, Pune",
+    "accommodation": "Conrad Pune, Pune",
+    "event": "-",
+    "point_of_interest": "Conrad Pune, stay from 08:00 to 09:40, nearest transit: Pune Junction, 5km away; Spice Kitchen, visit from 09:40 to 10:30, nearest transit: Koregaon Park, 0.5km away; ISKCON NVCC Temple, visit from 11:00 to 13:30, nearest transit: NIBM Road, 1km away; Sante Spa Cuisine, visit from 14:20 to 15:20, nearest transit: Koregaon Park, 0.3km away; The Flour Works, visit from 20:45 to 22:00, nearest transit: Kalyani Nagar, 1km away; Conrad Pune, stay from 22:15 to 07:00, nearest transit: Pune Junction, 5km away."
+  },
+  {
+    "days": 7,
+    "current_city": "from Pune to Bhopal",
+    "transportation": "Flight Number: 6E-5432, from Pune to Bhopal, Departure Time: 11:00, Arrival Time: 12:30",
+    "breakfast": "Kumar Pacific Mall, Pune",
+    "attraction": "-",
+    "lunch": "-",
+    "dinner": "-",
+    "accommodation": "-",
+    "event": "-",
+    "point_of_interest": "Conrad Pune, checkout from 07:00 to 07:30, nearest transit: Pune Junction, 5km away; Kumar Pacific Mall, visit from 07:45 to 08:45, nearest transit: Swargate, 1km away; Pune Airport, arrive from 09:30 to 10:30, nearest transit: Airport Road, 2km away; Flight 6E-5432, travel from 11:00 to 12:30."
+  }
+]
+
+****** Example Ends ******
+
+
+Given information: {enriched_ref_info}
+Query: {query}
+Traveler Persona:
+{persona}
+Output(JSONL):"""
