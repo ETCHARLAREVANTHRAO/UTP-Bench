@@ -1,4 +1,5 @@
 # UTP-Bench: Uncertainty-aware Travel Planning Benchmark
+![Screenshot](utpbench2.png)
 
 **UTP-Bench** is a large-scale benchmark for evaluating travel itinerary generation under real-world uncertainty. Unlike prior benchmarks that assume deterministic settings, it models disruptions such as transportation delays and crowd fluctuations using empirical data from 504 cities across 33 Indian states and union territories.
 
