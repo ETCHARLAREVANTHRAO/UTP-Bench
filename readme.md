@@ -80,9 +80,8 @@ UTP-Bench integrates multiple real-world travel components:
 | 🏨 Accommodations              |   3,670 |
 | 🎭 Events                      |     783 |
 | 🚉 Nearest Transit Stops       |  10,025 |
-| 📍 Distance Matrix             | 253,513 |
 
-Components marked as uncertainty-aware incorporate empirical uncertainty signals.
+
 
 ---
 
