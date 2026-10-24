@@ -1,5 +1,13 @@
-# UTP-Bench: Uncertainty-aware Travel Planning Benchmark
+<div align="center">
+
+<h1 align="center">🌍 UTP-Bench: Uncertainty-aware Travel Planning Benchmark</h1>
+
+[![EMNLP 2026](https://img.shields.io/badge/EMNLP-2026-blue.svg)](PAPER_URL)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.02421-b31b1b.svg?logo=arxiv)](https://arxiv.org/abs/2609.02421)
+
 ![Screenshot](utpbench2.png)
+
+</div>
 
 ## 📢 News
 
@@ -226,11 +234,11 @@ This shift moves travel-planning evaluation from **deterministic constraint sati
 
 The paper describes UTP-Bench as a benchmark built from real-world travel data, including transportation, attractions, restaurants, accommodations, events, transit stops, and distance information.
 
-The benchmark contains **1,000 travel queries**, each paired with a human-annotated gold-standard itinerary.
+### 📥 Download
 
-**Dataset download/access instructions will be provided here:**
+The **UTP-Bench augmented dataset** is available at the following Google Drive link:
 
-> 🚧 **Coming soon **
+👉 **[Download the UTP-Bench Augmented Dataset](https://drive.google.com/drive/folders/1cwdHMjBznyYOluKoxOiKu1RtVseZpgYy?usp=sharing)**
 
 ---
 
@@ -338,7 +346,18 @@ For questions, suggestions, or issues related to UTP-Bench, please open an issue
 
 If UTP-Bench helps your research, please consider **starring ⭐ the repository** and citing our work.
 
----
+
+```bibtex
+@misc{rao2026utpbenchuncertaintyawaretravelplanning,
+      title={UTP-Bench: Uncertainty-aware Travel Planning Benchmark}, 
+      author={Etcharla Revanth Rao and Priyanshu Karmakar and Shubhojit Mallick and Manish Gupta and Shreya Ghosh and Abhik Jana},
+      year={2026},
+      eprint={2609.02421},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2609.02421}, 
+}
+```
 
 <p align="center">
   <b>UTP-Bench</b> — From deterministic travel planning to robust planning under uncertainty 🌍
