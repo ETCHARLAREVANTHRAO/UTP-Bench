@@ -362,3 +362,12 @@ If UTP-Bench helps your research, please consider **starring ⭐ the repository*
 <p align="center">
   <b>UTP-Bench</b> — From deterministic travel planning to robust planning under uncertainty 🌍
 </p>
+
+## 📚 Related Research on LLM-based Travel Planning
+If you are interested in our research on LLM-based travel planning, please check out our related papers:
+
+- **TripCraft** — ACL 2025  
+  [![ACL Anthology](https://img.shields.io/badge/ACL-Anthology-blue)](https://aclanthology.org/2025.acl-long.834/)
+
+- **TripTide** — Findings of ACL 2026  
+  [![ACL Anthology](https://img.shields.io/badge/ACL-Anthology-blue)](https://aclanthology.org/2026.findings-acl.2002/)
